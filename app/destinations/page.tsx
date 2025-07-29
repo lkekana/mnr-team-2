@@ -563,8 +563,8 @@ export default function MonitoredDestinationsPage() {
           <p className="text-sm text-gray-600">
             Navigate to: 
             <a href="/dashboard" className="text-blue-600 hover:underline ml-2">Dashboard</a> | 
-            <a href="/dashboard/profile" className="text-blue-600 hover:underline ml-2">Profile</a> |
-            <a href="/dashboard/alerts" className="text-blue-600 hover:underline ml-2">Alerts</a>
+            <a href="/user" className="text-blue-600 hover:underline ml-2">Profile</a> |
+            <a href="/destinations" className="text-blue-600 hover:underline ml-2">Destinations</a>
           </p>
         </div>
       </div>

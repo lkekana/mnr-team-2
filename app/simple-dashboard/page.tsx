@@ -34,9 +34,9 @@ export default function DashboardPage() {
               <div className="mt-8">
                 <p className="text-sm text-gray-600">
                   Navigation: 
-                  <a href="/dashboard/profile" className="text-blue-600 hover:underline ml-2">Profile</a> | 
-                  <a href="/dashboard/alerts" className="text-blue-600 hover:underline ml-2">Alerts</a> |
-                  <a href="/dashboard/tests" className="text-blue-600 hover:underline ml-2">Tests</a>
+                  <a href="/user" className="text-blue-600 hover:underline ml-2">Profile</a> | 
+                  <a href="/dashboard/alerts" className="text-blue-600 hover:underline ml-2">Dashboard</a> |
+                  <a href="/destinations" className="text-blue-600 hover:underline ml-2">Destinations</a>
                 </p>
               </div>
             </div>
