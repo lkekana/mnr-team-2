@@ -19,10 +19,12 @@ import { useState } from "react";
 export function SignUpForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-  const [email, setEmail] = useState("");
+}: React.ComponentPropsWithoutRef<"div">) {  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -31,10 +33,23 @@ export function SignUpForm({
     e.preventDefault();
     const supabase = createClient();
     setIsLoading(true);
-    setError(null);
-
-    if (password !== repeatPassword) {
+    setError(null);    if (password !== repeatPassword) {
       setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    // Validate required fields
+    if (!name.trim() || !surname.trim() || !phoneNumber.trim()) {
+      setError("Please fill in all required fields");
+      setIsLoading(false);
+      return;
+    }
+
+    // Basic phone number validation
+    const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+    if (!phoneRegex.test(phoneNumber.replace(/\s+/g, ''))) {
+      setError("Please enter a valid phone number");
       setIsLoading(false);
       return;
     }
@@ -42,8 +57,13 @@ export function SignUpForm({
     try {
       const { error } = await supabase.auth.signUp({
         email,
-        password,
-        options: {
+        password,        options: {
+          data:{
+            Name: name,
+            Surname: surname,
+            Phone_Number: phoneNumber,
+            Profile_Picture: "profile_picture"
+            },
           emailRedirectTo: `${window.location.origin}/protected`,
         },
       });
@@ -64,8 +84,40 @@ export function SignUpForm({
           <CardDescription>Create a new account</CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSignUp}>
-            <div className="flex flex-col gap-6">
+          <form onSubmit={handleSignUp}>            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="name">First Name</Label>
+                <Input
+                  id="name"
+                  type="text"
+                  placeholder="John"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="surname">Last Name</Label>
+                <Input
+                  id="surname"
+                  type="text"
+                  placeholder="Doe"
+                  required
+                  value={surname}
+                  onChange={(e) => setSurname(e.target.value)}
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input
+                  id="phone"
+                  type="tel"
+                  placeholder="+1234567890"
+                  required
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
