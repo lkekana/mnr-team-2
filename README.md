@@ -1,4 +1,4 @@
-                                                                                                                       # Travel Risk Monitoring System
+# Travel Risk Monitoring System
 *Monkey & River 2025 Virtual Hackathon - Phase 1 Submission*
 
 A comprehensive web application for monitoring travel risk levels across global destinations, built with Next.js and designed for the Travel Risk Monitoring challenge.
@@ -13,14 +13,14 @@ This application provides real-time monitoring and management of travel destinat
 
 ## ✨ Features Implemented
 
-### ✅ *Authentication & Authorization*
+### ✅ *Authentication & Authorisation*
 - User login and signup pages with form validation
 - Protected routes requiring authentication
-- Automatic redirection for unauthorized access
+- Automatic redirection for unauthorised access
 - Session management with loading states
 
 ### ✅ *Database Connection*
-- Health check endpoint at /api/health
+- Health check endpoint at /api/healthcheck
 - Ready for Supabase PostgreSQL integration
 - Mock data implementation for development
 
@@ -68,7 +68,7 @@ This application provides real-time monitoring and management of travel destinat
 
 ### *Database* (Ready for Integration)
 - *Supabase* - PostgreSQL database with real-time capabilities
-- *Supabase Auth* - Authentication and authorization
+- *Supabase Auth* - Authentication and authorisation
 
 ### *Development Tools*
 - *ESLint* - Code linting and quality
@@ -95,7 +95,7 @@ This application provides real-time monitoring and management of travel destinat
    npm install
    
 
-3. *Set up environment variables* (Optional - app works with mock data)
+3. *Set up environment variables*
    bash
    # Create .env.local file
    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
@@ -190,9 +190,8 @@ mnr-team-2/
 5. *Database Health Check*
    bash
    # Test API endpoint
-   http://localhost:3000/api/health
-   
-   # Should return JSON: {"status":"healthy","database":"connected","timestamp":"..."}
+   http://localhost:3000/api/healthcheck
+   # Should return 200 OK with health status
    
 
 ### Test Results Summary
@@ -211,15 +210,15 @@ All core features tested and functional:
 ## 📡 API Endpoints
 
 ### Health Check
-- *GET* /api/health
+- *GET* /api/healthcheck
   - *Purpose:* Verify database connection
   - *Response:* { status: "healthy", database: "connected", timestamp: "..." }
 
-### Future Endpoints (Ready for Backend Integration)
-- *POST* /api/auth/login - User authentication
-- *GET/PUT* /api/user/profile - User profile management
-- *GET/POST* /api/alerts - Alerts management
-- *GET/POST/PUT/DELETE* /api/destinations - Destinations CRUD
+### Endpoints (Ready for Backend Integration)
+- /api
+- /api/audit-logs
+- /api/monitored-destinations
+- /api/user-alerts
 
 ## ✅ Hackathon Requirements Compliance
 
@@ -228,13 +227,13 @@ All core features tested and functional:
 - ✅ *README:* Comprehensive setup and feature documentation
 - ✅ *Stack:* React + Node.js (Next.js 14)
 
-### *Authentication & Authorization*
+### *Authentication & Authorisation*
 - ✅ *User Login:* Functional login page with form validation and loading states
 - ✅ *Protected Routes:* Dashboard routes require authentication with automatic redirection
 - ✅ *Session Management:* Login flow with realistic redirect behavior
 
 ### *Database Connection*
-- ✅ *Health Check:* /api/health endpoint verifies database connectivity
+- ✅ *Health Check:* /api/healthcheck endpoint verifies database connectivity
 - ✅ *Database Ready:* Configured for Supabase PostgreSQL integration
 
 ### *Required Features*
@@ -256,13 +255,13 @@ All core features tested and functional:
 #### ✅ *Entity CRUD - MonitoredDestination*
 - *Required Fields:* id, location, riskLevel, lastChecked
 - *CREATE:* Add new destinations with full form validation
-- *READ:* Display all destinations in organized table
+- *READ:* Display all destinations in organised table
 - *UPDATE:* Edit existing destinations with pre-filled forms
 - *DELETE:* Remove destinations with confirmation dialogs
 
 ### *Code Quality*
 - ✅ *Project Structure:* Clear separation with Next.js App Router
-- ✅ *Readable Code:* TypeScript with proper typing and component organization
+- ✅ *Readable Code:* TypeScript with proper typing and component organisation
 - ✅ *Commit History:* Meaningful commits with descriptive messages
 
 ### *Architecture*
@@ -273,7 +272,7 @@ All core features tested and functional:
 ## 👥 Team Information
 
 *Team:* MNR Team 2
-*Team Size:* 5 members
+*Team Sise:* 5 members
 *Repository:* https://github.com/lkekana/mnr-team-2
 *Tech Stack:* Next.js 14 + TypeScript + Tailwind CSS + Supabase (ready)
 
@@ -292,7 +291,7 @@ This application is fully prepared for Phase 2 development with:
 
 ### Current Implementation
 - *Destination Tracking:* Monitor multiple global locations
-- *Risk Level Assessment:* Low, Medium, High, Critical risk categorization
+- *Risk Level Assessment:* Low, Medium, High, Critical risk categorisation
 - *Real-time Updates:* "Check Now" functionality for instant risk updates
 - *Geographic Focus:* Location-based monitoring with intuitive UI
 - *Alert Integration:* Risk-based alerts and notifications
@@ -310,10 +309,10 @@ This application is fully prepared for Phase 2 development with:
 ### Technical Improvements
 - Comprehensive testing suite (Jest, React Testing Library)
 - Real-time updates using Supabase subscriptions
-- Performance optimizations and caching
+- Performance optimisations and caching
 - Accessibility improvements (WCAG compliance)
 - Progressive Web App (PWA) features
-- Advanced data visualization
+- Advanced data visualisation
 
 ## 🐛 Known Issues & Limitations
 
@@ -327,8 +326,8 @@ For evaluation and testing:
 1. Clone repository and follow installation steps
 2. Test all features using the manual testing guide above
 3. Verify API health check endpoint
-4. Review code structure and component organization
-5. Check responsive design on different screen sizes
+4. Review code structure and component organisation
+5. Check responsive design on different screen sises
 
 ## 📄 License
 
