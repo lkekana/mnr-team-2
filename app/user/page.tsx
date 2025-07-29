@@ -1,7 +1,38 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { UserMetadata } from '@supabase/supabase-js';
+import { useRouter } from 'next/navigation';
 
 export default function ProfilePage() {
+  const supabase = createClient();
+  const [claims, setClaims] = useState<UserMetadata | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchClaims = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        setError(error.message);
+      } else {
+        console.log(data);
+        setClaims(data?.session?.user?.user_metadata || null);
+        setFormData(prev => ({
+          name: `${data?.session?.user?.user_metadata?.name} ${data?.session?.user?.user_metadata?.surname}` || 'John Doe',
+          email: data?.session?.user?.user_metadata?.email || 'john@example.com',
+          password: '',
+          notificationThreshold: 5,
+          emailNotifications: true
+        }));
+        setError(null);
+      }
+    };
+
+    fetchClaims();
+  }, [supabase]);
+
+  const router = useRouter();
+  
   const [formData, setFormData] = useState({
     name: 'John Doe',
     email: 'john@example.com',
@@ -197,6 +228,7 @@ export default function ProfilePage() {
                   <button
                     type="button"
                     className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    onClick={() => {router.push('/')}}
                   >
                     Cancel
                   </button>
