@@ -22,6 +22,7 @@ export function SignUpForm({
   // Enhanced state with additional fields
   const [formData, setFormData] = useState({
     name: "",
+    surname: "", 
     email: "",
     password: "",
     repeatPassword: ""
@@ -40,6 +41,13 @@ export function SignUpForm({
       newErrors.name = "Name is required";
     } else if (formData.name.trim().length < 2) {
       newErrors.name = "Name must be at least 2 characters";
+    }
+
+     // Surname validation
+    if (!formData.surname.trim()) {
+      newErrors.surname = "surname is required";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.surname = "surname must be at least 2 characters";
     }
 
     // Email validation
@@ -103,7 +111,8 @@ export function SignUpForm({
         options: {
           emailRedirectTo: `${window.location.origin}/protected`,
           data: {
-            full_name: formData.name,
+            name: formData.name,
+            surname: formData.surname // Added surname field
           }
         },
       });
@@ -134,11 +143,11 @@ export function SignUpForm({
               
               {/* Name Field - NEW */}
               <div className="grid gap-2">
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">Name</Label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="Enter your full name"
+                  placeholder="Enter your name"
                   required
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
@@ -146,6 +155,22 @@ export function SignUpForm({
                 />
                 {errors.name && (
                   <p className="text-sm text-red-500">{errors.name}</p>
+                )}
+              </div>
+              {/* Surname Field - NEW */}
+              <div className="grid gap-2">
+                <Label htmlFor="surname">surname</Label>
+                <Input
+                  id="surname"
+                  type="text"
+                  placeholder="Enter your surname"
+                  required
+                  value={formData.surname}
+                  onChange={(e) => handleInputChange('surname', e.target.value)}
+                  className={errors.name ? "border-red-500" : ""}
+                />
+                {errors.name && (
+                  <p className="text-sm text-red-500">{errors.surname}</p>
                 )}
               </div>
 
