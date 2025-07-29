@@ -1,23 +1,23 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 interface MonitoredDestination {
   id: string
   location: string
-  riskLevel: string
-  lastChecked: string
+  risk_level: string
+  last_checked: string
 }
 
 const sampleDestinations: MonitoredDestination[] = [
-  { id: '1', location: 'Bangkok, Thailand', riskLevel: 'Low', lastChecked: '2025-07-29T10:30:00Z' },
-  { id: '2', location: 'Cairo, Egypt', riskLevel: 'Medium', lastChecked: '2025-07-29T08:15:00Z' },
-  { id: '3', location: 'Kyiv, Ukraine', riskLevel: 'High', lastChecked: '2025-07-29T06:45:00Z' },
-  { id: '4', location: 'Paris, France', riskLevel: 'Low', lastChecked: '2025-07-28T22:30:00Z' },
-  { id: '5', location: 'Mumbai, India', riskLevel: 'Medium', lastChecked: '2025-07-28T20:15:00Z' },
-  { id: '6', location: 'Lagos, Nigeria', riskLevel: 'High', lastChecked: '2025-07-28T18:20:00Z' },
+  { id: '1', location: 'Bangkok, Thailand', risk_level: 'Low', last_checked: '2025-07-29T10:30:00Z' },
+  { id: '2', location: 'Cairo, Egypt', risk_level: 'Medium', last_checked: '2025-07-29T08:15:00Z' },
+  { id: '3', location: 'Kyiv, Ukraine', risk_level: 'High', last_checked: '2025-07-29T06:45:00Z' },
+  { id: '4', location: 'Paris, France', risk_level: 'Low', last_checked: '2025-07-28T22:30:00Z' },
+  { id: '5', location: 'Mumbai, India', risk_level: 'Medium', last_checked: '2025-07-28T20:15:00Z' },
+  { id: '6', location: 'Lagos, Nigeria', risk_level: 'High', last_checked: '2025-07-28T18:20:00Z' },
 ]
 
-const riskLevelOptions = [
+const risk_levelOptions = [
   'Low',
   'Medium', 
   'High',
@@ -31,18 +31,32 @@ export default function MonitoredDestinationsPage() {
   const [editingDestination, setEditingDestination] = useState<MonitoredDestination | null>(null)
   const [formData, setFormData] = useState({
     location: '',
-    riskLevel: '',
-    lastChecked: ''
+    risk_level: '',
+    last_checked: ''
   })
   const [loading, setLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [filterRisk, setFilterRisk] = useState('all')
 
+  // Fetch destinations from the API
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      try {
+        const response = await fetch('/api/monitored-destinations')
+        const data = await response.json()
+        setDestinations(data)
+      } catch (error) {
+        console.error('Error fetching destinations:', error)
+      }
+    }
+    fetchDestinations()
+  }, [])
+
   // Filter and search destinations
   const filteredDestinations = destinations.filter(dest => {
     const matchesSearch = dest.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         dest.riskLevel.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesFilter = filterRisk === 'all' || dest.riskLevel === filterRisk
+                         dest.risk_level.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesFilter = filterRisk === 'all' || dest.risk_level === filterRisk
     return matchesSearch && matchesFilter
   })
 
@@ -50,62 +64,85 @@ export default function MonitoredDestinationsPage() {
     e.preventDefault()
     setLoading(true)
     
-    // Simulate API call delay
-    setTimeout(() => {
+    try {
       if (editingDestination) {
         // Update existing destination
+        const response = await fetch(`/api/monitored-destinations`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: editingDestination.id, ...formData })
+        })
+        const updatedDestination = await response.json()
         setDestinations(destinations.map(dest => 
-          dest.id === editingDestination.id 
-            ? { ...dest, ...formData }
-            : dest
+          dest.id === editingDestination.id ? updatedDestination[0] : dest
         ))
       } else {
         // Create new destination
-        const newDestination: MonitoredDestination = {
-          id: Date.now().toString(),
-          ...formData
-        }
-        setDestinations([newDestination, ...destinations])
+        const response = await fetch(`/api/monitored-destinations`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        })
+        const newDestination = await response.json()
+        setDestinations([newDestination[0], ...destinations])
       }
       
       // Reset form
       resetForm()
+    } catch (error) {
+      console.error('Error saving destination:', error)
+    } finally {
       setLoading(false)
-    }, 800)
+    }
   }
 
   const handleEdit = (destination: MonitoredDestination) => {
     setEditingDestination(destination)
     setFormData({
       location: destination.location,
-      riskLevel: destination.riskLevel,
-      lastChecked: destination.lastChecked
+      risk_level: destination.risk_level,
+      last_checked: destination.last_checked
     })
     setShowForm(true)
   }
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     const destination = destinations.find(d => d.id === id)
     if (confirm(`Are you sure you want to stop monitoring "${destination?.location}"? This action cannot be undone.`)) {
-      setDestinations(destinations.filter(dest => dest.id !== id))
+      try {
+        await fetch(`/api/monitored-destinations?id=${id}`, { method: 'DELETE' })
+        setDestinations(destinations.filter(dest => dest.id !== id))
+      } catch (error) {
+        console.error('Error deleting destination:', error)
+      }
     }
   }
 
-  const handleCheckNow = (id: string) => {
+  const handleCheckNow = async (id: string) => {
     const now = new Date().toISOString()
-    setDestinations(destinations.map(dest => 
-      dest.id === id ? { ...dest, lastChecked: now } : dest
-    ))
+    try {
+      const response = await fetch(`/api/monitored-destinations`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, last_checked: now })
+      })
+      const updatedDestination = await response.json()
+      setDestinations(destinations.map(dest => 
+        dest.id === id ? updatedDestination[0] : dest
+      ))
+    } catch (error) {
+      console.error('Error updating last checked time:', error)
+    }
   }
 
   const resetForm = () => {
-    setFormData({ location: '', riskLevel: '', lastChecked: '' })
+    setFormData({ location: '', risk_level: '', last_checked: '' })
     setShowForm(false)
     setEditingDestination(null)
   }
 
-  const getRiskColor = (riskLevel: string) => {
-    switch (riskLevel.toLowerCase()) {
+  const getRiskColor = (risk_level: string) => {
+    switch (risk_level.toLowerCase()) {
       case 'low':
         return 'bg-green-100 text-green-800 border-green-200'
       case 'medium':
@@ -121,8 +158,8 @@ export default function MonitoredDestinationsPage() {
     }
   }
 
-  const getRiskIcon = (riskLevel: string) => {
-    switch (riskLevel.toLowerCase()) {
+  const getRiskIcon = (risk_level: string) => {
+    switch (risk_level.toLowerCase()) {
       case 'low':
         return (
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -153,7 +190,7 @@ export default function MonitoredDestinationsPage() {
     }
   }
 
-  const formatLastChecked = (timestamp: string) => {
+  const formatlast_checked = (timestamp: string) => {
     const date = new Date(timestamp)
     const now = new Date()
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
@@ -172,9 +209,9 @@ export default function MonitoredDestinationsPage() {
   const getDestinationCounts = () => {
     return {
       total: destinations.length,
-      low: destinations.filter(d => d.riskLevel.toLowerCase() === 'low').length,
-      medium: destinations.filter(d => d.riskLevel.toLowerCase() === 'medium').length,
-      high: destinations.filter(d => ['high', 'critical'].includes(d.riskLevel.toLowerCase())).length,
+      low: destinations.filter(d => d.risk_level.toLowerCase() === 'low').length,
+      medium: destinations.filter(d => d.risk_level.toLowerCase() === 'medium').length,
+      high: destinations.filter(d => ['high', 'critical'].includes(d.risk_level.toLowerCase())).length,
     }
   }
 
@@ -320,7 +357,7 @@ export default function MonitoredDestinationsPage() {
                   className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="all">All Risk Levels</option>
-                  {riskLevelOptions.map(option => (
+                  {risk_levelOptions.map(option => (
                     <option key={option} value={option}>{option}</option>
                   ))}
                 </select>
@@ -361,13 +398,13 @@ export default function MonitoredDestinationsPage() {
                   </label>
                   <select
                     id="risk-level"
-                    value={formData.riskLevel}
-                    onChange={(e) => setFormData({...formData, riskLevel: e.target.value})}
+                    value={formData.risk_level}
+                    onChange={(e) => setFormData({...formData, risk_level: e.target.value})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     required
                   >
                     <option value="">Select risk level</option>
-                    {riskLevelOptions.map(option => (
+                    {risk_levelOptions.map(option => (
                       <option key={option} value={option}>{option}</option>
                     ))}
                   </select>
@@ -380,8 +417,8 @@ export default function MonitoredDestinationsPage() {
                   <input
                     type="datetime-local"
                     id="last-checked"
-                    value={formData.lastChecked.slice(0, 16)}
-                    onChange={(e) => setFormData({...formData, lastChecked: e.target.value + ':00.000Z'})}
+                    value={formData.last_checked.slice(0, 16)}
+                    onChange={(e) => setFormData({...formData, last_checked: e.target.value + ':00.000Z'})}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     max={new Date().toISOString().slice(0, 16)}
                     required
@@ -455,13 +492,13 @@ export default function MonitoredDestinationsPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRiskColor(destination.riskLevel)}`}>
-                        <span className="mr-1">{getRiskIcon(destination.riskLevel)}</span>
-                        {destination.riskLevel}
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getRiskColor(destination.risk_level)}`}>
+                        <span className="mr-1">{getRiskIcon(destination.risk_level)}</span>
+                        {destination.risk_level}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatLastChecked(destination.lastChecked)}
+                      {formatlast_checked(destination.last_checked)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex space-x-2">
