@@ -35,6 +35,13 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
+
+
+        <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCyLvGP9ifUp9swhKHTzsmvrdazjpVleek&libraries=maps"
+        defer
+        ></script>
+
       </body>
     </html>
   );
