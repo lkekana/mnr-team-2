@@ -1,4 +1,19 @@
+// "use client";
+// import { getUserLocation } from "@/lib/utils";
+// import { useEffect } from "react"
+
 export default function DashboardPage() {
+  
+  // useEffect(() => {
+  //   getUserLocation().then((position) => {
+  //     if (position) {
+  //       console.log("User's location:", position.coords);
+  //     } else {
+  //       console.log("Location not available.");
+  //     }
+  //   });
+  // }, []);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
