@@ -15,7 +15,12 @@ export interface RoutePreferences {
     maxTravelTime: number;
 }
 
-function RouteRenderer({ origin, destination, preferences }: { origin: string; destination: string; preferences: RoutePreferences }) {
+function RouteRenderer({ origin, destination, preferences, onRoutePoints }: { 
+    origin: string; 
+    destination: string; 
+    preferences: RoutePreferences;
+    onRoutePoints?: (points: { lat: number; lng: number; location: string }[]) => void;
+}) {
     const map = useMap();
     const routesLibrary = useMapsLibrary('routes');
     const [directionsService, setDirectionsService] = useState<google.maps.DirectionsService>();
@@ -70,6 +75,12 @@ function RouteRenderer({ origin, destination, preferences }: { origin: string; d
                 routes: [routes[0]]
             });
 
+            // Extract route points for weather analysis
+            if (onRoutePoints && routes[0]) {
+                const routePoints = extractRoutePoints(routes[0]);
+                onRoutePoints(routePoints);
+            }
+
             // Create alternative routes based on preferences
             if (routes.length > 1) {
                 const alternatives = getAlternativeRoutes(routes.slice(1), preferences);
@@ -83,7 +94,7 @@ function RouteRenderer({ origin, destination, preferences }: { origin: string; d
             mainRenderer.setMap(null);
             altRenderers.forEach(renderer => renderer.setMap(null));
         };
-    }, [directionsService, mainRenderer, map, origin, destination, preferences]);
+    }, [directionsService, mainRenderer, map, origin, destination]);
 
     const getAlternativeRoutes = (routes: google.maps.DirectionsRoute[], prefs: RoutePreferences) => {
         const alternatives = [];
@@ -161,12 +172,48 @@ function RouteRenderer({ origin, destination, preferences }: { origin: string; d
         setAltRenderers(newRenderers);
     };
 
+    const extractRoutePoints = (route: google.maps.DirectionsRoute) => {
+        const points: { lat: number; lng: number; location: string }[] = [];
+        
+        route.legs.forEach((leg, legIndex) => {
+            // Add origin point
+            if (legIndex === 0) {
+                points.push({
+                    lat: leg.start_location.lat(),
+                    lng: leg.start_location.lng(),
+                    location: origin
+                });
+            }
+            
+            // Sample points along the route (every 10th step)
+            leg.steps.forEach((step, stepIndex) => {
+                if (stepIndex % 10 === 0) {
+                    points.push({
+                        lat: step.start_location.lat(),
+                        lng: step.start_location.lng(),
+                        location: `Route point ${stepIndex}`
+                    });
+                }
+            });
+            
+            // Add destination point
+            points.push({
+                lat: leg.end_location.lat(),
+                lng: leg.end_location.lng(),
+                location: destination
+            });
+        });
+        
+        return points;
+    };
+
     return null;
 }
 
 export default function MapView() {
     const position = { lat: -29.2025, lng: 28.0337 };
     const [routeData, setRouteData] = useState<{ origin: string; destination: string } | null>(null);
+    const [routePoints, setRoutePoints] = useState<{ lat: number; lng: number; location: string }[]>([]);
     // Hardcoded preferences with safety priority
     const routePreferences: RoutePreferences = {
         prioritizeSafety: true,
@@ -185,14 +232,19 @@ export default function MapView() {
     return (
         <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
             <RouteInputs onRouteRequest={handleRouteRequest} />
+
             <RouteLegend />
+
             {routeData && (
                 <WeatherPanel 
                     origin={routeData.origin} 
-                    destination={routeData.destination} 
+                    destination={routeData.destination}
+                    routePoints={routePoints}
                 />
             )}
+
             <FloatingNav />
+
             <Map
                 style={{width: '100vw', height: '100vh'}}
                 defaultCenter={position}
@@ -200,13 +252,15 @@ export default function MapView() {
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
             >
-                {routeData && (
-                    <RouteRenderer 
-                        origin={routeData.origin} 
-                        destination={routeData.destination}
-                        preferences={routePreferences}
-                    />
-                )}
+
+            {routeData && (
+                <RouteRenderer 
+                    origin={routeData.origin} 
+                    destination={routeData.destination}
+                    preferences={routePreferences}
+                    onRoutePoints={setRoutePoints}
+                />
+            )}
             </Map>
         </APIProvider>
     )
