@@ -63,11 +63,11 @@ export function WeatherAlerts({ routePoints }: WeatherAlertsProps) {
 
             const rainAmount = weatherData.rain['1h'];
 
-            if (rainAmount > 10) {
+            if (rainAmount > 5) {
                 hazards.push({
                     id: `rain-${location}`,
                     type: 'heavy_rain',
-                    severity: rainAmount > 20 ? 'severe' : 'moderate',
+                    severity: rainAmount > 10 ? 'severe' : 'moderate',
                     location,
                     message: `Heavy rainfall detected (${rainAmount}mm/h)`,
                     action: 'Consider delaying travel or taking alternative route'
@@ -89,12 +89,12 @@ export function WeatherAlerts({ routePoints }: WeatherAlertsProps) {
         }
 
         // High Winds Detection
-        if (wind.speed && wind.speed > 15) { // 15 m/s = ~54 km/h
+        if (wind.speed && wind.speed > 9) { // 15 m/s = ~54 km/h
 
             hazards.push({
                 id: `wind-${location}`,
                 type: 'high_winds',
-                severity: wind.speed > 25 ? 'extreme' : 'severe',
+                severity: wind.speed > 10 ? 'extreme' : 'severe',
                 location,
                 message: `High winds detected (${Math.round(wind.speed * 3.6)} km/h)`,
                 action: 'Exercise extreme caution. Avoid high-profile vehicles.'
@@ -144,7 +144,7 @@ export function WeatherAlerts({ routePoints }: WeatherAlertsProps) {
     if (visibleAlerts.length === 0) return null;
 
     return (
-        <div className="fixed top-6 right-6 z-40 w-80 space-y-2" style={{marginTop: '280px'}}>
+        <div className="fixed top-6 right-2 sm:right-6 z-40 w-72 sm:w-80 space-y-2" style={{marginTop: '280px'}}>
             {visibleAlerts.map((alert) => (
                 <div
                     key={alert.id}

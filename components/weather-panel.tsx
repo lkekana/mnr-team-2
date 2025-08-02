@@ -98,7 +98,7 @@ export function WeatherPanel({ origin, destination, routePoints = [] }: WeatherP
 
     return (
         <>
-            <div className="fixed top-6 right-6 z-50 w-80">
+            <div className="fixed top-6 right-2 sm:right-6 z-50 w-72 sm:w-80">
                 <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-4 shadow-lg">
                     <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
                         <Cloud className="h-4 w-4 mr-2" />
