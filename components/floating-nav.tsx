@@ -6,7 +6,7 @@ export function FloatingNav() {
     const router = useRouter();
 
     const navItems = [
-        { id: 'profile', icon: User, label: 'Profile', route: '/dashboard/profile' },
+        { id: 'profile', icon: User, label: 'Profile', route: '/user' },
         { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', route: '/dashboard' },
         { id: 'settings', icon: Settings, label: 'Settings', route: '/dashboard/settings' },
     ];
