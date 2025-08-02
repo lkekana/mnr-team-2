@@ -154,7 +154,7 @@ mnr-team-2/
 2. *User Profile Management*
    bash
    # Navigate to profile page
-   http://localhost:3000/dashboard/profile
+   http://localhost:3000/user
    
    # Test form validation and submission
    # Verify success message and field updates
@@ -165,7 +165,7 @@ mnr-team-2/
 3. *Alerts Dashboard*
    bash
    # Navigate to alerts page
-   http://localhost:3000/dashboard/alerts
+   http://localhost:3000/dashboard
    
    # Test filtering by status (All, Active, Pending, Resolved)
    # Test sorting by date, title, status
@@ -176,7 +176,7 @@ mnr-team-2/
 4. *Monitored Destinations CRUD*
    bash
    # Navigate to destinations page
-   http://localhost:3000/dashboard/tests
+   http://localhost:3000/destinations
    
    # Test all CRUD operations:
    # - CREATE: Click "Add Destination" → fill form → submit
