@@ -33,7 +33,7 @@ export function RouteInputs({ onRouteRequest }: RouteInputsProps) {
 
 	return (
 		<div className="fixed top-6 left-6 z-50 w-96">
-			<div className="bg-white/10 backdrop-blur-glass border border-white/20 rounded-2xl p-6 shadow-glass">
+			<div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-6 shadow-lg">
 				<div className="flex items-center justify-center gap-3 mb-6">
 					<div className="p-2 bg-primary rounded-lg text-center">
 						<Navigation className="h-5 w-5 text-primary-foreground" />
