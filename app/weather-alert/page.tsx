@@ -6,7 +6,7 @@ import { FaCarSide } from 'react-icons/fa';
 import SidebarNav from "../nav/page";
 
 // Lazy load map
-const MapComponent = dynamic(() => import('@/components/MapComponent'), { ssr: false });
+const MapView = dynamic(() => import('@/components/MapComponent'), { ssr: false });
 
 const routeSuggestions = [
   {
@@ -17,6 +17,8 @@ const routeSuggestions = [
     color: 'green',
     time: '25 mins',
     distance: '12 km',
+    origin: 'Maseru, Lesotho',
+    destination: 'Ladybrand, South Africa',
   },
   {
     id: 2,
@@ -26,6 +28,8 @@ const routeSuggestions = [
     color: 'yellow',
     time: '20 mins',
     distance: '10.5 km',
+    origin: 'Maseru, Lesotho',
+    destination: 'Ficksburg, South Africa',
   },
   {
     id: 3,
@@ -35,8 +39,11 @@ const routeSuggestions = [
     color: 'red',
     time: '18 mins',
     distance: '10 km',
+    origin: 'Maseru, Lesotho',
+    destination: 'Clocolan, South Africa',
   },
 ];
+
 
 export default function WeatherAlertPage() {
   const [selectedRoute, setSelectedRoute] = useState<number | null>(null);
@@ -57,7 +64,12 @@ export default function WeatherAlertPage() {
 
       {/* Map View (expanded if route confirmed) */}
       <div className={`flex-1 bg-blue-300 relative transition-all duration-500`}>
-        <MapComponent selectedRoute={selectedRoute} />
+        <div className="min-h-screen flex flex-col bg-gray-100">
+  <div className="flex-1 bg-blue-300 relative">
+    <MapView/>
+  </div>
+</div>
+
 
         {userRoute && (
           <div className="absolute top-4 left-4 bg-white px-4 py-2 rounded-xl shadow text-sm font-medium">

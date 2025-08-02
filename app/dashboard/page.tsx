@@ -395,7 +395,7 @@ const Dashboard = () => {
   const gridItems = [
     // { label: "Overview", icon: <Home size={20} /> },
     { label: "Rewards", icon: <BarChart2 size={20} />,
-   onClick: () => router.push("/rewards"),},
+   },
     {
       label: "Analytics",
       icon: <PieChart size={20} />,
@@ -403,7 +403,7 @@ const Dashboard = () => {
     },
     { label: "Dashboard", icon: <LayoutDashboard size={20} />,
   onClick: () => router.push("/home") },
-    { label: "Settings", icon: <Settings size={20} /> },
+    { label: "Settings", icon: <Settings size={20} />,onClick: () => router.push("/rewards"), },
     { label: "Profile", icon: <User size={20} /> },
   ];
 

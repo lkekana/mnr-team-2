@@ -6,7 +6,7 @@ import { FaCarSide } from 'react-icons/fa';
 import SidebarNav from "../nav/page";
 import * as turf from '@turf/turf';
 
-const Map = dynamic(() => import('@/components/areaAlertMap'), { ssr: false });
+const MapView = dynamic(() => import('@/components/safetyMap'), { ssr: false });
 
 const routeSuggestions = [
   { id: 1, name: 'Route A', score: 85, risk: 'Low', color: 'green', time: '25 mins', distance: '12 km' },
@@ -108,8 +108,7 @@ export default function WeatherAlertPage() {
       <SidebarNav />
 
       <div className="flex-1 relative">
-        <Map selectedRoute={selectedRoute} userLocation={userLocation}
-        riskZones={riskZones} safetyZones={safetyZones}/>
+        <MapView/>
 
         {userRoute && (
           <div className={`absolute top-4 left-4 bg-white px-4 py-2 rounded-xl shadow text-sm font-medium`}>
