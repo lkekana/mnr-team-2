@@ -1,5 +1,5 @@
 import { Button } from "./ui/button";
-import { User, LayoutDashboard, Settings } from 'lucide-react';
+import { User, LayoutDashboard, Mail } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export function FloatingNav() {
@@ -8,7 +8,7 @@ export function FloatingNav() {
     const navItems = [
         { id: 'profile', icon: User, label: 'Profile', route: '/user' },
         { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard', route: '/dashboard' },
-        { id: 'settings', icon: Settings, label: 'Settings', route: '/dashboard/settings' },
+        { id: 'settings', icon: Mail, label: 'Settings', route: '/dashboard/settings' },
     ];
 	return (
 		<div className="fixed right-6 top-1/2 -translate-y-1/2 z-50">
