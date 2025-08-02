@@ -10,6 +10,9 @@ interface RouteInputsProps {
 export function RouteInputs({ onRouteRequest }: RouteInputsProps) {
 	const [origin, setOrigin] = useState('');
 	const [destination, setDestination] = useState('');
+	const [loading, setLoading] = useState(false);
+		const [error, setError] = useState('');
+	
 
 	// This clears the input fields without making a route request
 	const handleClearInputs = () => {
@@ -25,9 +28,56 @@ export function RouteInputs({ onRouteRequest }: RouteInputsProps) {
 		setDestination(value);
 	};
 
-	const handleGetDirections = () => {
-		if (origin.trim() && destination.trim()) {
-			onRouteRequest(origin.trim(), destination.trim());
+	const handleGetDirections  = async () => {
+		// if (origin.trim() && destination.trim()) {
+		// 	onRouteRequest(origin.trim(), destination.trim());
+		// }
+		
+		try {
+    // 1. Check network status first
+		if (!navigator.onLine) {
+		throw new Error('No internet connection. Please check your network and try again.');
+		}
+
+		// 2. Validate inputs
+		if (!origin.trim() || !destination.trim()) {
+		throw new Error('Please enter both origin and destination');
+		}
+
+		// 3. Add loading state (you'll need to manage this in your component state)
+		setLoading(true);
+		
+		// 4. Make the request with timeout
+		const timeoutPromise = new Promise((_, reject) => 
+		setTimeout(() => reject(new Error('Request timed out')), 10000)
+		);
+
+		// Assuming onRouteRequest returns a promise
+		await Promise.race([
+		onRouteRequest(origin.trim(), destination.trim()),
+		timeoutPromise
+		]);
+
+	} catch (error: any) {
+		// 5. Handle different error types
+		let errorMessage = 'Failed to get directions';
+		
+		if (error.message.includes('internet')) {
+		errorMessage = error.message;
+		} else if (error.message.includes('timed out')) {
+		errorMessage = 'The request took too long. Please try again.';
+		} else if (error.message.includes('origin and destination')) {
+		errorMessage = error.message;
+		} else {
+		console.error('Direction error:', error);
+		}
+
+		// 6. Show error to user (implementation depends on your UI framework)
+		setError(errorMessage); // You'll need error state management
+		alert(errorMessage); // Fallback if you don't have a better UI
+
+		} finally {
+			setLoading(false);
 		}
 	};
 

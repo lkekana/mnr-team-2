@@ -3,7 +3,7 @@ import { AlertTriangle, Cloud, CloudRain, Wind, X } from 'lucide-react';
 
 interface WeatherAlert {
     id: string;
-    type: 'hail' | 'heavy_rain' | 'flood' | 'high_winds';
+    type: 'hail' | 'heavy_rain' | 'flood' | 'high_winds'| 'thunderstorm with heavy drizzle'| 'thunderstorm with drizzle'| 'thunderstorm with light drizzle'| 'ragged thunderstorm'|'heavy thunderstorm' | 'thunderstorm' | 'light thunderstorm' |'heavy shower rain and drizzle' | 'heavy intensity drizzle rain' | 'heavy intensity drizzle' | 'ragged shower rain' | 'heavy intensity shower rain' | 'light intensity shower rain' | 'freezing rain' | 'extreme rain' | 'very heavy rain' | 'heavy intensity rain'| 'heavy shower snow' | 'shower snow' | 'light shower snow' | 'rain and snow' | 'light rain and snow' | 'shower sleet' | 'light shower sleet' | 'sleet' | 'heavy snow' | 'snow'| 'volcanic ash' | 'tornado' | 'fog' | 'sand/dust whirls' | 'smoke' | 'mist'| 'broken clouds'| 'overcast clouds';
     severity: 'moderate' | 'severe' | 'extreme';
     location: string;
     message: string;
