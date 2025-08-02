@@ -144,7 +144,7 @@ export function WeatherAlerts({ routePoints }: WeatherAlertsProps) {
     if (visibleAlerts.length === 0) return null;
 
     return (
-        <div className="fixed top-6 right-6 z-40 w-80 space-y-2" style={{marginTop: '280px'}}>
+        <div className="fixed top-6 right-2 sm:right-6 z-40 w-72 sm:w-80 space-y-2" style={{marginTop: '280px'}}>
             {visibleAlerts.map((alert) => (
                 <div
                     key={alert.id}

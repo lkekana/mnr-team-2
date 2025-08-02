@@ -153,15 +153,15 @@ export default function AlertsPage() {
       <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Alerts Dashboard</h1>
-          <p className="mt-2 text-gray-600">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Alerts Dashboard</h1>
+          <p className="mt-2 text-sm sm:text-base text-gray-600">
             Monitor and manage all system alerts and notifications
           </p>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        <div className="grid grid-cols-2 gap-3 sm:gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-6 sm:mb-8">
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
@@ -245,16 +245,16 @@ export default function AlertsPage() {
 
         {/* Controls */}
         <div className="bg-white shadow rounded-lg mb-6">
-          <div className="px-6 py-4 border-b border-gray-200">
+          <div className="px-4 sm:px-6 py-4 border-b border-gray-200">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
               
               {/* Filter */}
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                 <label className="text-sm font-medium text-gray-700">Filter by Status:</label>
                 <select
                   value={filter}
                   onChange={(e) => setFilter(e.target.value as any)}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="all">All ({counts.total})</option>
                   <option value="active">Active ({counts.active})</option>
@@ -264,7 +264,7 @@ export default function AlertsPage() {
               </div>
 
               {/* Sort */}
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
                 <label className="text-sm font-medium text-gray-700">Sort by:</label>
                 <select
                   value={`${sortBy}-${sortOrder}`}
@@ -273,7 +273,7 @@ export default function AlertsPage() {
                     setSortBy(field as any)
                     setSortOrder(order as any)
                   }}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="timestamp-desc">Newest First</option>
                   <option value="timestamp-asc">Oldest First</option>
@@ -292,16 +292,16 @@ export default function AlertsPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Alert
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="hidden md:table-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Timestamp
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -309,25 +309,34 @@ export default function AlertsPage() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {sortedAlerts.map((alert) => (
                   <tr key={alert.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-4">
                       <div>
                         <div className="text-sm font-medium text-gray-900">{alert.title}</div>
                         {alert.description && (
                           <div className="text-sm text-gray-500 mt-1">{alert.description}</div>
                         )}
+                        <div className="sm:hidden mt-2">
+                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(alert.status)}`}>
+                            <span className="mr-1">{getStatusIcon(alert.status)}</span>
+                            {alert.status.charAt(0).toUpperCase() + alert.status.slice(1)}
+                          </span>
+                        </div>
+                        <div className="md:hidden mt-1 text-xs text-gray-500">
+                          {formatDate(alert.timestamp)}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(alert.status)}`}>
                         <span className="mr-1">{getStatusIcon(alert.status)}</span>
                         {alert.status.charAt(0).toUpperCase() + alert.status.slice(1)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="hidden md:table-cell px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {formatDate(alert.timestamp)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-2">
                         {alert.status !== 'resolved' && (
                           <button
                             onClick={() => handleResolve(alert.id)}

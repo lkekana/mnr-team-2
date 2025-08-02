@@ -32,13 +32,13 @@ export function RouteInputs({ onRouteRequest }: RouteInputsProps) {
 	};
 
 	return (
-		<div className="fixed top-6 left-6 z-50 w-96">
-			<div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-6 shadow-lg">
-				<div className="flex items-center justify-center gap-3 mb-6">
+		<div className="fixed top-0 left-0 right-0 sm:top-6 sm:left-6 sm:right-auto z-50 sm:w-96">
+			<div className="bg-white/95 backdrop-blur-sm border-0 border-b sm:border sm:border-gray-200 sm:rounded-lg p-4 sm:p-6 shadow-lg">
+				<div className="flex items-center justify-center gap-3 mb-4 sm:mb-6">
 					<div className="p-2 bg-primary rounded-lg text-center">
-						<Navigation className="h-5 w-5 text-primary-foreground" />
+						<Navigation className="h-4 w-4 sm:h-5 sm:w-5 text-primary-foreground" />
 					</div>
-					<h2 className="text-lg font-semibold text-gray-900">
+					<h2 className="text-base sm:text-lg font-semibold text-gray-900">
 						Plan Your Route
 					</h2>
 				</div>
@@ -72,7 +72,7 @@ export function RouteInputs({ onRouteRequest }: RouteInputsProps) {
 						<Button
 							onClick={handleGetDirections}
 							disabled={!origin.trim() || !destination.trim()}
-							className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg disabled:opacity-50"
+							className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg disabled:opacity-50 text-sm sm:text-base"
 						>
 							Get Directions
 						</Button>
@@ -82,7 +82,7 @@ export function RouteInputs({ onRouteRequest }: RouteInputsProps) {
 							onClick={handleClearInputs}
 							className="p-2 bg-white hover:bg-gray-100 border-gray-300 rounded-full text-black"
 						>
-							<X className="h-4 w-4" />
+							<X className="h-3 w-3 sm:h-4 sm:w-4" />
 						</Button>
 					</div>
 
