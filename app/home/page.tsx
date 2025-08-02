@@ -4,6 +4,7 @@ import { APIProvider, Map, useMap, useMapsLibrary } from '@vis.gl/react-google-m
 import { FloatingNav } from '@/components/floating-nav'
 import { RouteInputs } from '@/components/route-inputs'
 import { RouteLegend } from '@/components/route-legend'
+import { WeatherPanel } from '@/components/weather-panel'
 
 export interface RoutePreferences {
     prioritizeSafety: boolean;
@@ -185,6 +186,12 @@ export default function MapView() {
         <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
             <RouteInputs onRouteRequest={handleRouteRequest} />
             <RouteLegend />
+            {routeData && (
+                <WeatherPanel 
+                    origin={routeData.origin} 
+                    destination={routeData.destination} 
+                />
+            )}
             <FloatingNav />
             <Map
                 style={{width: '100vw', height: '100vh'}}
