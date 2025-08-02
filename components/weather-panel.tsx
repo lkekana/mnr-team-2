@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Cloud, Sun, CloudRain, Thermometer } from 'lucide-react';
+import { WeatherAlerts } from './weather-alerts';
 
 interface WeatherInfo {
     location: string;
@@ -12,9 +13,10 @@ interface WeatherInfo {
 interface WeatherPanelProps {
     origin: string;
     destination: string;
+    routePoints?: { lat: number; lng: number; location: string }[];
 }
 
-export function WeatherPanel({ origin, destination }: WeatherPanelProps) {
+export function WeatherPanel({ origin, destination, routePoints = [] }: WeatherPanelProps) {
     const [originWeather, setOriginWeather] = useState<WeatherInfo | null>(null);
     const [destWeather, setDestWeather] = useState<WeatherInfo | null>(null);
     const [loading, setLoading] = useState(false);
@@ -50,8 +52,9 @@ export function WeatherPanel({ origin, destination }: WeatherPanelProps) {
 
     const geocodeLocation = async (location: string) => {
         try {
+            const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY || '3ad83ef7501ff2cbaeb5b8413d232a9c';
             const response = await fetch(
-                `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=1&appid=3ad83ef7501ff2cbaeb5b8413d232a9c`
+                `https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(location)}&limit=1&appid=${apiKey}`
             );
             const data = await response.json();
             return data[0] ? { lat: data[0].lat, lng: data[0].lon } : null;
@@ -63,8 +66,9 @@ export function WeatherPanel({ origin, destination }: WeatherPanelProps) {
 
     const fetchWeatherData = async (lat: number, lng: number, locationName: string): Promise<WeatherInfo | null> => {
         try {
+            const apiKey = process.env.NEXT_PUBLIC_WEATHER_API_KEY || '3ad83ef7501ff2cbaeb5b8413d232a9c';
             const response = await fetch(
-                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=3ad83ef7501ff2cbaeb5b8413d232a9c&units=metric`
+                `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${apiKey}&units=metric`
             );
             const data = await response.json();
 
@@ -93,53 +97,56 @@ export function WeatherPanel({ origin, destination }: WeatherPanelProps) {
     if (!origin || !destination) return null;
 
     return (
-        <div className="fixed top-6 right-6 z-50 w-80">
-            <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-4 shadow-lg">
-                <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
-                    <Cloud className="h-4 w-4 mr-2" />
-                    Route Weather
-                </h3>
+        <>
+            <div className="fixed top-6 right-6 z-50 w-80">
+                <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-lg p-4 shadow-lg">
+                    <h3 className="font-semibold text-gray-900 mb-3 flex items-center">
+                        <Cloud className="h-4 w-4 mr-2" />
+                        Route Weather
+                    </h3>
 
-                {loading ? (
-                    <div className="text-sm text-gray-600">Loading weather...</div>
-                ) : (
-                    <div className="space-y-3">
-                        {originWeather && (
-                            <div className="flex items-center justify-between p-2 bg-green-50 rounded">
-                                <div>
-                                    <div className="text-sm font-medium text-gray-900">Origin</div>
-                                    <div className="text-xs text-gray-600">{originWeather.location}</div>
+                    {loading ? (
+                        <div className="text-sm text-gray-600">Loading weather...</div>
+                    ) : (
+                        <div className="space-y-3">
+                            {originWeather && (
+                                <div className="flex items-center justify-between p-2 bg-green-50 rounded">
+                                    <div>
+                                        <div className="text-sm font-medium text-gray-900">Origin</div>
+                                        <div className="text-xs text-gray-600">{originWeather.location}</div>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        {getWeatherIcon(originWeather.condition)}
+                                        <span className="text-sm font-semibold">{originWeather.temp}°C</span>
+                                    </div>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    {getWeatherIcon(originWeather.condition)}
-                                    <span className="text-sm font-semibold">{originWeather.temp}°C</span>
-                                </div>
-                            </div>
-                        )}
+                            )}
 
-                        {destWeather && (
-                            <div className="flex items-center justify-between p-2 bg-red-50 rounded">
-                                <div>
-                                    <div className="text-sm font-medium text-gray-900">Destination</div>
-                                    <div className="text-xs text-gray-600">{destWeather.location}</div>
+                            {destWeather && (
+                                <div className="flex items-center justify-between p-2 bg-red-50 rounded">
+                                    <div>
+                                        <div className="text-sm font-medium text-gray-900">Destination</div>
+                                        <div className="text-xs text-gray-600">{destWeather.location}</div>
+                                    </div>
+                                    <div className="flex items-center space-x-2">
+                                        {getWeatherIcon(destWeather.condition)}
+                                        <span className="text-sm font-semibold">{destWeather.temp}°C</span>
+                                    </div>
                                 </div>
-                                <div className="flex items-center space-x-2">
-                                    {getWeatherIcon(destWeather.condition)}
-                                    <span className="text-sm font-semibold">{destWeather.temp}°C</span>
-                                </div>
-                            </div>
-                        )}
+                            )}
 
-                        {originWeather && destWeather && (
-                            <div className="pt-2 border-t border-gray-200">
-                                <div className="text-xs text-gray-600">
-                                    Temperature difference: {Math.abs(destWeather.temp - originWeather.temp)}°C
+                            {originWeather && destWeather && (
+                                <div className="pt-2 border-t border-gray-200">
+                                    <div className="text-xs text-gray-600">
+                                        Temperature difference: {Math.abs(destWeather.temp - originWeather.temp)}°C
+                                    </div>
                                 </div>
-                            </div>
-                        )}
-                    </div>
-                )}
+                            )}
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+            <WeatherAlerts routePoints={routePoints} />
+        </>
     );
 }
